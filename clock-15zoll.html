@@ -1,0 +1,314 @@
+<!--
+Autor: Raphael Hoeser
+Datum: 30.11.2013
+Version: 2.4
+Changelog: 12-Uhr-Bug ist jetzt gefixt (12:30-13:00 wird jetzt korrekt angezeigt)
+
+#####
+Das Projekt wird fuer den Raspberry Pi entwickelt.(Siehe: http://www.hoeser-medien.de/?p=960)
+
+Diese Version ist eine Singlefile-Loesung.
+Ein Webserver ist ueberfluessig.
+#####
+-->
+<html>
+    <head>
+        <meta name="author" content="Raphael Hoeser">
+        <title>Word Clock</title>
+        <style>
+            @-webkit-keyframes farbspiel {
+                33% {
+                    color:#030;
+                }
+                66% {
+                    color:#003;
+                }
+                100% {
+                    color:#300;
+                }
+            }
+            *{
+                margin:0px;
+                padding:0px;
+            }
+            html{
+        /* background color (not the text box) */
+                background-color:#000;
+        /* upper distance of text box */
+                padding-top:7%;
+        padding-left:7%;
+            }
+      body{
+           width:80%;
+           height:80%;
+      }
+      span{
+                display: inline-block;
+                height:60px;
+        /* width:50px; */
+                width:6.9%;
+                font-size:50px;
+                font-family:Verdana,Arial;
+                line-height:40px;
+                borderolid 0px;
+                text-align:center;
+                text-shadow:0px 0px 0px #000;
+                transition:color 5s ,text-shadow 5s;
+                color:#200;
+                /*-webkit-animation-name: farbspiel;
+                -webkit-animation-duration: 30s;
+                -webkit-animation-iteration-count: infinite;*/
+            }
+            #main{
+                background-color:rgba(0,0,0,1);
+                width:1024px;
+                margin:auto;
+                padding:5px;
+                overflow:hidden;
+            }
+            .bright{
+                color:#fff;
+                text-shadow:0px 0px 20px #faa;
+            }
+            #seconds{
+                width:3px;
+                height:560px;
+                position:relative;
+                bottom:0px;
+                left:0px;
+                margin:-30px;
+                float:left;
+                background-color:#fff;
+                transition:bottom 1s;
+            }
+            #minutes{
+                width:3px;
+                height:560px;
+                position:relative;
+                bottom:0px;
+                right:0px;
+                margin:-30px;
+                float:right;
+                background-color:#fff;
+                transition:bottom 1s;
+            }
+      #letters{
+        margin:auto;
+        width:1000;
+        /*border:2px solid #fff; */
+      }
+        </style>
+        <script>
+            function showtime(){
+                for(z=0;z<document.getElementsByTagName("span").length;z++){
+                    document.getElementsByTagName("span")[z].className=document.getElementsByTagName("span")[z].className.split(" ")[0];
+                }
+                var now = new Date();
+                
+                setLight(getHour(now)+"",true);
+                
+                min=getMinute(now);
+                for(ik=0;ik<min.length;ik++){
+                    setLight(min[ik]+"",true);
+                }
+                setLight("ES",true);
+                setLight("IST",true);
+                /*for(z=0;z<document.getElementsByClassName("bright").length;z++){
+                    document.getElementsByClassName("bright")[z].style.textShadow="0px 0px "+(now.getMinutes()%5)*10+"px #fff";
+                }*/
+                document.getElementById("seconds").style.bottom=-560+560/59*now.getSeconds()+"px";
+                document.getElementById("minutes").style.bottom=-560+560/4*(now.getMinutes()%5)+"px";
+            }
+            function getHour(now){
+                if(now.getMinutes()<30){
+                    if(now.getHours()%12==0){
+                        return 12;
+                    }
+                    return now.getHours()%12;
+                }
+                return (now.getHours()%12)+1;
+            }
+            function getMinute(now){
+                if(now.getMinutes()>=55){
+                    return new Array("FUNF","VORV");
+                }
+                if(now.getMinutes()>=50){
+                    return new Array("ZEHN","VORV");
+                }
+                if(now.getMinutes()>=45){
+                    return new Array("VIERTEL","VORV");
+                }
+                if(now.getMinutes()>=40){
+                    return new Array("ZWANZIG","VORV");
+                }
+                if(now.getMinutes()>=35){
+                    return new Array("FUNF","NACH","HALB");
+                }
+                if(now.getMinutes()>=30){
+                    return new Array("HALB");
+                }
+                if(now.getMinutes()>=25){
+                    return new Array("FUNF","VORV","HALB");
+                }
+                if(now.getMinutes()>=20){
+                    return new Array("ZWANZIG","NACH");
+                }
+                if(now.getMinutes()>=15){
+                    return new Array("VIERTEL","NACHV");
+                }
+                if(now.getMinutes()>=10){
+                    return new Array("ZEHN","NACH");
+                }
+                if(now.getMinutes()>=5){
+                    return new Array("FUNF","NACH");
+                }
+                
+                return new Array("UHR");
+            }
+            function setLight(classname,setBright){
+                if(setBright){
+                    for(i=0;i<document.getElementsByClassName(classname).length;i++){
+                        document.getElementsByClassName(classname).className = classname+" bright";
+                    }
+                }
+                else{
+                    for(i=0;i<document.getElementsByClassName(classname).length;i++){
+                        document.getElementsByClassName(classname).className = classname+" dark";
+                    }
+                }
+            }
+            function start(){
+                showtime();
+                setInterval(showtime,1000);
+            }
+        </script>
+    </head>
+    <body onload="start()">
+        <div id="main">
+        <div id="seconds"></div>
+        <div id="minutes"></div>
+    <div id="letters">
+                <span class="ES">E</span>
+                <span class="ES">S</span>
+                <span>M</span>
+                <span class="IST">I</span>
+                <span class="IST">S</span>
+                <span class="IST">T</span>
+                <span>E</span>
+                <span class="FUNF">F</span>
+                <span class="FUNF">&Uuml;</span>
+                <span class="FUNF">N</span>
+                <span class="FUNF">F</span>
+            <br>
+                <span class="ZEHN">Z</span>
+                <span class="ZEHN">E</span>
+                <span class="ZEHN">H</span>
+                <span class="ZEHN">N</span>
+                <span class="ZWANZIG">Z</span>
+                <span class="ZWANZIG">W</span>
+                <span class="ZWANZIG">A</span>
+                <span class="ZWANZIG">N</span>
+                <span class="ZWANZIG">Z</span>
+                <span class="ZWANZIG">I</span>
+                <span class="ZWANZIG">G</span>
+            <br>
+                <span class="NACH">N</span>
+                <span class="NACH">A</span>
+                <span class="NACH">C</span>
+                <span class="NACH">H</span>
+                <span class="VIERTEL">V</span>
+                <span class="VIERTEL">I</span>
+                <span class="VIERTEL">E</span>
+                <span class="VIERTEL">R</span>
+                <span class="VIERTEL">T</span>
+                <span class="VIERTEL">E</span>
+                <span class="VIERTEL">L</span>
+            <br>
+                <span class="VORV">V</span>
+                <span class="VORV">O</span>
+                <span class="VORV">R</span>
+                <span class="NACHV">N</span>
+                <span class="NACHV">A</span>
+                <span class="NACHV">C</span>
+                <span class="NACHV">H</span>
+                <span class="HALB">H</span>
+                <span class="HALB">A</span>
+                <span class="HALB">L</span>
+                <span class="HALB">B</span>
+            <br>
+                <span class="1">E</span>
+                <span class="1">I</span>
+                <span class="1">N</span>
+                <span class="1">S</span>
+                <span>I</span>
+                <span>N</span>
+                <span>K</span>
+                <span class="2">Z</span>
+                <span class="2">W</span>
+                <span class="2">E</span>
+                <span class="2">I</span>
+            <br>
+                <span class="3">D</span>
+                <span class="3">R</span>
+                <span class="3">E</span>
+                <span class="3">I</span>
+                <span>E</span>
+                <span>A</span>
+                <span>N</span>
+                <span class="4">V</span>
+                <span class="4">I</span>
+                <span class="4">E</span>
+                <span class="4">R</span>
+            <br>
+                <span class="5">F</span>
+                <span class="5">&Uuml;</span>
+                <span class="5">N</span>
+                <span class="5">F</span>
+                <span>N</span>
+                <span>I</span>
+                <span class="6">S</span>
+                <span class="6">E</span>
+                <span class="6">C</span>
+                <span class="6">H</span>
+                <span class="6">S</span>
+            <br>
+                <span class="7">S</span>
+                <span class="7">I</span>
+                <span class="7">E</span>
+                <span class="7">B</span>
+                <span class="7">E</span>
+                <span class="7">N</span>
+                <span>I</span>
+                <span class="8">A</span>
+                <span class="8">C</span>
+                <span class="8">H</span>
+                <span class="8">T</span>
+            <br>
+                <span class="9">N</span>
+                <span class="9">E</span>
+                <span class="9">U</span>
+                <span class="9">N</span>
+                <span class="10">Z</span>
+                <span class="10">E</span>
+                <span class="10">H</span>
+                <span class="10">N</span>
+                <span class="11">E</span>
+                <span class="11">L</span>
+                <span class="11">F</span>
+            <br>
+                <span class="12">Z</span>
+                <span class="12">W</span>
+                <span class="12">&Ouml;</span>
+                <span class="12">L</span>
+                <span class="12">F</span>
+                <span>K</span>
+                <span>A</span>
+                <span>B</span>
+                <span class="UHR">U</span>
+                <span class="UHR">H</span>
+                <span class="UHR">R</span>
+        </div>
+        </div>
+        
+    </body>
+</html>
