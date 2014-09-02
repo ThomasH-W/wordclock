@@ -52,7 +52,7 @@ Es gibt einen einfachen Browser: kiosk-browser von Peter Schultz auf github.
     sudo cp browser /usr/local/bin
 
 Step 2) Setup & install xorg und nodm; Siehe auch Anleitung von nexxylove
-    sudo apt-get update &amp;&amp; sudo apt-get dist-upgrade
+    sudo apt-get update; sudo apt-get dist-upgrade
     sudo apt-get install xorg nodm
 
 Step 3) Den Benutzer "kiosk" anlegen und in die relevanten Gruppen aufnehmen (www-data?).
@@ -92,7 +92,7 @@ Step 8) Auto login - hier wird der Benutzer "kiosk" automatisch nach dem botten 
     Vorne ein '#' einfügen
     #1:2345:respawn:/sbin/getty 115200 tty1Folgende Zeile darunter hinzufügen:
     Code: Alles markieren
-    1:2345:respawn:/bin/login -f kiosk tty1 &lt;/dev/tty1 &gt;/dev/tty1 2&gt;&amp;1
+	1:2345:respawn:/bin/login -f kiosk tty1 tty1 /dev/tty1 2>&1
 
 Step 9)  Die HTML-Datei clock.html file nach /var/www/ kopieren.
     sudo mkdir -p /var/www
@@ -139,7 +139,7 @@ Cons
 Danach muss die Konfigurationsdatei /boot/config.txt angepasst werden, um den VGA Adapter verwenden zu können.
 Beschreibung der Parameter unter http://elinux.org/RPiconfig.
 
-sudo nano/boot/config.txt
+sudo nano /boot/config.txt
     
     # uncomment if you get no picture on HDMI for a default "safe" mode
     # hdmi_safe=1
@@ -164,6 +164,8 @@ sudo nano/boot/config.txt
     hdmi_force_hotplug=1
     
     # uncomment to force a specific HDMI mode (this will force VGA)
+	# hdmi_group=2 (DMT)
+	# hdmi_mode=16   1024x768  60Hz
     hdmi_group=2
     hdmi_mode=16
     
