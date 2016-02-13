@@ -73,13 +73,13 @@ Hier kann man auch eine belibige web-Seite aufrufen
     #!/bin/bash
     /usr/local/bin/browser  file:///var/www/clock.html
 
-Step 7) Den display-manager konfigurieren: nano /etc/default/nodm
+Step 7) Den display-manager konfigurieren: sudo nano /etc/default/nodm
 Die Option "-s 0 dpms" schaltet den Screen-Saver aus.
     NODM_ENABLED=true
     NODM_USER=kiosk
     NODM_X_OPTIONS='-nolisten tcp -s 0 dpms'
 
-Step 6) nano /etc/X11/default-display-manager
+Step 6) sudo nano /etc/X11/default-display-manager
 Dann wird noch in /etc/X11/default-display-manager statt /usr/sbin/lightdm einfach /usr/sbin/nodm  eingetragen
 
     /usr/sbin/nodm
